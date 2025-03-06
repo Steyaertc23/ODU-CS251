@@ -1,0 +1,4 @@
+teddy_bear 100 5
+gum 5 100
+smart_phone 50 5
+video_game 100 5

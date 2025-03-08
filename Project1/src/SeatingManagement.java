@@ -295,7 +295,7 @@ public class SeatingManagement {
 	}
 
 	private boolean cancelBooking() {
-		try(Scanner scanner = new Scanner(System.in)){
+		try{
 			String location = scanner.nextLine();
 			int[] seatID = SeatingChart.rowColumnIndexFromSeatID(location);
 			if (seatID[0] >= seating.length) {
@@ -316,6 +316,8 @@ public class SeatingManagement {
 			noBookedSeats--;
 			noAvailableSeats++;
 			return true;
+		}catch(Exception e) {
+			return false;
 		}
 	}
 	
@@ -339,6 +341,7 @@ public class SeatingManagement {
 				}
 				else {
 					adjacentSeats.clear();
+					location++;
 				}
 			}
 			if (foundNumberAdjacent) break;

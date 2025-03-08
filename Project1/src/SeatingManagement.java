@@ -430,6 +430,7 @@ public class SeatingManagement {
 			System.out.println("2. Cancel Reservation");
 			System.out.println("3. Find N adjacent available seats");
 			System.out.println("4. Save and Exit");
+			System.out.println("Enter Your Choice:");
 			run = menu();	
 		}
 	}

@@ -1,8 +1,8 @@
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -73,7 +73,7 @@ public class SeatingManagement {
 		}
 	}
 	
-	public void readSeatingFile() {
+	private void readSeatingFile() {
 		
 		
 		
@@ -85,14 +85,14 @@ public class SeatingManagement {
 		else {
 		// Reading from the updated seating file
 			try(Scanner fileReader = new Scanner(updatedSeatingFile)){
-				int lineNo = 0;
+				int lineNo = -3;
 				while (fileReader.hasNextLine()) {
 					String line = fileReader.nextLine();
-					if (lineNo == 0) {
+					if (lineNo == -3) {
 						String[] temp = line.split(" ");
 						seating = new Seating[Integer.parseInt(temp[0])][Integer.parseInt(temp[1])];
 					}
-					else if (lineNo != 2 || lineNo != 3){
+					else if (lineNo != -2 || lineNo != -1){
 						String row = line.split(" ")[1];
 						for (int i = 0; i < row.length(); i++) {
 							if (row.charAt(i) == booked) {
@@ -126,7 +126,7 @@ public class SeatingManagement {
 	private void deleteUpdatedFile() {
 		try {
             if (updatedSeatingFile.delete()) {
-                System.out.println(updatedSeatingFile.getName() + " deleted successfully.");
+//                System.out.println(updatedSeatingFile.getName() + " deleted successfully.");
             } 
         } catch (SecurityException e) {
             System.err.println("Deletion of \"" + updatedSeatingFile.getName() + "\" not permitted");
@@ -136,29 +136,29 @@ public class SeatingManagement {
 	
 	private void writeSeatingFile() {
 		deleteUpdatedFile();
-		try(BufferedWriter writer = new BufferedWriter(new FileWriter(updatedSeatingFile))){
-			writer.write(seating.length + " " + seating[0].length);
-			writer.newLine();
+		try(PrintWriter writer = new PrintWriter(new FileWriter(updatedSeatingFile))){
+			writer.println(seating.length + " " + seating[0].length);
 			for (int i = 0; i <= seating[0].length; i++) {
-				if (i == 0)
-					writer.write(i + " ");
-				else if (i%10 == 0)
-					
-					writer.write(i/10);
+				if (i%10 == 0)
+					if (i != 0) 
+						writer.print(i/10);	
+					else	
+						writer.print(i + " ");
 				else
-					writer.write(" ");
+					writer.print(" ");
 			}
-			writer.newLine();
+			writer.println();
 
 			for (int i = 0; i <= seating[0].length; i++) {
-				if (i == 0) {
-					writer.write("  ");
+				if (i != 0) {
+					writer.print(i%10);
+					
 				}
 				else {
-					writer.write(i%10);
+					writer.print("  ");
 				}
 			}
-			writer.newLine();
+			writer.println();
 			for (int i = 0; i < seating.length; i++) {
 
 				// Sets the row letter
@@ -186,8 +186,7 @@ public class SeatingManagement {
 						rowString += notASeat;
 					}
 				}
-				writer.write(rowString);
-				writer.newLine();
+				writer.println(rowString);
 			}
 //			for (Seating[] row : seating) {
 //				String rowString = "";
@@ -285,6 +284,10 @@ public class SeatingManagement {
 			}
 			
 			seating[seatID[0]][seatID[1]] = Seating.Unavailable;
+			
+			noBookedSeats++;
+			noAvailableSeats--;
+			
 			return true;
 		}catch (Exception e){
 			return false;
@@ -309,6 +312,9 @@ public class SeatingManagement {
 			}
 			
 			seating[seatID[0]][seatID[1]] = Seating.Available;
+			
+			noBookedSeats--;
+			noAvailableSeats++;
 			return true;
 		}
 	}
@@ -349,7 +355,7 @@ public class SeatingManagement {
 		}
 	}
 	
-	public boolean menu() {		
+	private boolean menu() {		
 		
 		try{
 			int input = scanner.nextInt();
@@ -411,6 +417,18 @@ public class SeatingManagement {
 			return true;
 		}
 		
+	}
+	
+	public void run() {
+		readSeatingFile();
+		boolean run = true;
+		while (run) {
+			System.out.println("1. Book a seat");
+			System.out.println("2. Cancel Reservation");
+			System.out.println("3. Find N adjacent available seats");
+			System.out.println("4. Save and Exit");
+			run = menu();	
+		}
 	}
 	
 }

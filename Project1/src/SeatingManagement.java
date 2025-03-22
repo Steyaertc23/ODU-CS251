@@ -188,22 +188,6 @@ public class SeatingManagement {
 				}
 				writer.println(rowString);
 			}
-//			for (Seating[] row : seating) {
-//				String rowString = "";
-//				for (Seating seat : row) {
-//					if (seat == Seating.Unavailable) {
-//						rowString += booked;
-//					}
-//					else if (seat == Seating.Available) {
-//						rowString += available;
-//					}
-//					else {
-//						rowString += notASeat;
-//					}
-//				}
-//				writer.write(rowString);
-//				writer.newLine();
-//			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -266,12 +250,14 @@ public class SeatingManagement {
 		try{
 			String location = scanner.nextLine();
 			int[] seatID = SeatingChart.rowColumnIndexFromSeatID(location.toUpperCase());
-			if (seatID[0] >= seating.length) {
-				System.err.println("Invalid Row.");
+			if (seatID[0] >= seating.length || seatID[0] < 0) {
+				char[] rowLetters = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 
+									 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
+				System.err.println("Invalid Row. Please enter row letter A-" + String.valueOf(rowLetters[seating.length-1]));
 				return false;
 			}
-			else if (seatID[1] >= seating[0].length) {
-				System.err.println("Invalid Column");
+			else if (seatID[1] >= seating[0].length || seatID[1] < 0) {
+				System.err.println("Invalid Column, please enter column number 1 - " + seating[0].length );
 				return false;
 			}
 			else if (Seating.Unavailable == seating[seatID[0]][seatID[1]]) {
@@ -298,12 +284,14 @@ public class SeatingManagement {
 		try{
 			String location = scanner.nextLine();
 			int[] seatID = SeatingChart.rowColumnIndexFromSeatID(location);
-			if (seatID[0] >= seating.length) {
-				System.err.println("Invalid Row.");
+			if (seatID[0] >= seating.length || seatID[0] < 0) {
+				char[] rowLetters = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 
+									 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
+				System.err.println("Invalid Row. Please enter row letter A-" + String.valueOf(rowLetters[seating.length-1]));
 				return false;
 			}
-			else if (seatID[1] >= seating[0].length) {
-				System.err.println("Invalid Column");
+			else if (seatID[1] >= seating[0].length || seatID[1] < 0) {
+				System.err.println("Invalid Column, please enter column number 1 - " + seating[0].length );
 				return false;
 			}
 			else if (Seating.Available == seating[seatID[0]][seatID[1]]) {
@@ -346,8 +334,8 @@ public class SeatingManagement {
 			}
 			if (foundNumberAdjacent) break;
 		}
-		if (foundNumberAdjacent)
-			return adjacentSeats.getFirst();
+		if (foundNumberAdjacent) return adjacentSeats.getFirst();
+		
 		return null;
 	}
 	
@@ -397,21 +385,26 @@ public class SeatingManagement {
 				scanner.nextLine();
 				String starting = findAdjacentSeats(adjacent);
 				if (null == starting) 
-					System.err.println("There are no seats that match your requested number of adjacent seats.");
+					System.err.println("Unable to find " + adjacent + " available seats.");
 				
 				else
 					bookAdjacentSeats(adjacent, starting);
 				
 				return true;
 			}
-
+			
 			case 4 -> {
+				printSeating();
+				return true;
+			}
+
+			case 5 -> {
 				writeSeatingFile();
 				System.out.println("Saving and exiting....");
 				return false;
 			}
 			default -> {
-				System.err.println("Invalid Input, please enter number 1-4");
+				System.err.println("Invalid Input, please enter number 1-5");
 				return true;
 			}
 				
@@ -429,6 +422,7 @@ public class SeatingManagement {
 			System.out.println("1. Book a seat");
 			System.out.println("2. Cancel Reservation");
 			System.out.println("3. Find N adjacent available seats");
+			System.out.println("3. Show current seating chart");
 			System.out.println("4. Save and Exit");
 			System.out.println("Enter Your Choice:");
 			run = menu();	

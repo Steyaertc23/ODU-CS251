@@ -56,14 +56,15 @@ public class SortingAlgorithms {
 		return listOfInts.clone();
 	}
 	
-	private char[] convertIntToChar(int[] listOfInts) {
-		char[] listOfChars = new char[listOfInts.length];
+	private String[] convertArrListToArr() {
 		
-		for (int i = 0; i < listOfInts.length; i++) {
-			listOfChars[i] = asciiDecToLetter.get(listOfInts[i]);
+		String[] toReturn = new String[fileContents.size()];
+		
+		for (int i = 0; i < toReturn.length; i++) {
+			toReturn[i] = fileContents.get(i);
 		}
 		
-		return listOfChars.clone();
+		return toReturn;
 	}
 	
 	private int sumOfAscii(int[] asciiNums) {
@@ -74,21 +75,22 @@ public class SortingAlgorithms {
 		return sum;
 	}
 	
-	private String bubbleSort(String unsorted) {
+	private String[] bubbleSort() {
 		
-		// Convert to integers for sorting and summation
-		int[] convertedString = convertCharToInt(unsorted.toCharArray().clone());
+		String[] fileContentsArray = convertArrListToArr();
+		
 		// Sorting
-		int temp;
-		for (int i = 0; i < convertedString.length - 1; i++) {
+		String temp;
+		for (int i = 0; i < fileContentsArray.length - 1; i++) {
             boolean swapped = false;
-            for (int j = 0; j < convertedString.length - i - 1; j++) {
-                if (convertedString[j] > convertedString[j + 1]) {
+            for (int j = 0; j < fileContentsArray.length - i - 1; j++) {
+            	
+                if (Integer.parseInt(fileContentsArray[j].split("\t")[1]) > Integer.parseInt(fileContentsArray[j + 1].split("\t")[1])) {
                     
                     // Swap arr[j] and arr[j+1]
-                    temp = convertedString[j];
-                    convertedString[j] = convertedString[j + 1];
-                    convertedString[j + 1] = temp;
+                    temp = fileContentsArray[j];
+                    fileContentsArray[j] = fileContentsArray[j + 1];
+                    fileContentsArray[j + 1] = temp;
                     swapped = true;
                 }
             }
@@ -99,54 +101,46 @@ public class SortingAlgorithms {
                 break;
         }
 		
-		// Summation
-		temp = sumOfAscii(convertedString.clone());
-		
 		// Converting the sorted int[] to String
-		String sortedString = String.valueOf(convertIntToChar(convertedString.clone()));
 		
-		return sortedString + "\t\t" + temp;
+		return fileContentsArray;
 		
 	}
 	
-	private String insertionSort(String unsorted) {
+	private String[] insertionSort() {
 		
-		// Convert to integers for sorting and summation
-		int[] convertedString = convertCharToInt(unsorted.toCharArray().clone());
+		
+		String[] fileContentsArray = convertArrListToArr();
 		// Sort
-		int n = convertedString.length;
+		int n = fileContentsArray.length;
         for (int i = 1; i < n; ++i) {
-            int key = convertedString[i];
+            String key = fileContentsArray[i];
             int j = i - 1;
 
             /* Move elements of arr[0..i-1], that are
                greater than key, to one position ahead
                of their current position */
-            while (j >= 0 && convertedString[j] > key) {
-            	convertedString[j + 1] = convertedString[j];
+            while (j >= 0 && Integer.parseInt(fileContentsArray[j].split("\t")[1]) > Integer.parseInt(key.split("\t")[1])) {
+            	fileContentsArray[j + 1] = fileContentsArray[j];
                 j = j - 1;
             }
-            convertedString[j + 1] = key;
+            fileContentsArray[j + 1] = key;
         }
         
-        // Summation
-        n = sumOfAscii(convertedString.clone());
         
-        // Converting the sorted int[] to String
-		String sortedString = String.valueOf(convertIntToChar(convertedString.clone()));
-		return sortedString + "\t\t" + n;
+		return fileContentsArray;
 	}
 	
 	// Helper
 	// Merges two subarrays of a[]
-	void merge(int a[], int l, int m, int r)
+	void merge(String a[], int l, int m, int r)
     {
 
         int n1 = m - l + 1;
         int n2 = r - m;
 
-        int L[] = new int[n1];
-        int R[] = new int[n2];
+        String L[] = new String[n1];
+        String R[] = new String[n2];
 
         for (int i = 0; i < n1; ++i)
             L[i] = a[l + i];
@@ -160,7 +154,7 @@ public class SortingAlgorithms {
 
         int k = l;
         while (i < n1 && j < n2) {
-            if (L[i] <= R[j]) {
+            if (L[i].split("\t")[1].compareTo(R[j].split("\t")[1]) <= 0) {
                 a[k] = L[i];
                 i++;
             }
@@ -186,8 +180,9 @@ public class SortingAlgorithms {
 	
 	// Main function that sorts a[] from l-r using
     // merge()
-	private void sort(int a[], int l, int r)
+	private void sort(String a[], int l, int r)
     {
+		
         if (l < r) {
           
             int m = (l + r) / 2;
@@ -201,30 +196,31 @@ public class SortingAlgorithms {
         }
     }
 	
-	// Converts string to int[], then sorts it, returns the sorted string
-	private String mergeSort(String unsorted) {
-		
-		int[] convertedString = convertCharToInt(unsorted.toCharArray().clone());
-		
-		int length = convertedString.length;
+	
+	private String[] mergeSort() {
 		
 		
-		sort(convertedString, 0, length-1);
 		
+		int length = fileContents.size();
+		String[] fileContentsArray = convertArrListToArr();
 		
-		String sortedString = String.valueOf(convertIntToChar(convertedString));
-		return sortedString + "\t\t" + sumOfAscii(convertedString);
+		sort(fileContentsArray, 0, length-1);
+		
+		return fileContentsArray;
 		
 		
 	}
 	
-	private void writeOut(String line, boolean delete) {
+	private void writeOut(String[] lines, boolean delete) {
 		File file = new File("." + File.separator + "data" + File.separator + "sorted.txt");
 		if (delete)
 			file.delete();
 		
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))){
-			writer.write(line + "\n");
+			for (String line : lines) {
+				writer.write(line);
+				writer.newLine();
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -233,17 +229,20 @@ public class SortingAlgorithms {
 	
 	public void run() {
 		readInputFile();
-		boolean firstRun = true;
+		ArrayList<String> temp = new ArrayList<>();
+		
+		for (int i = 0; i < fileContents.size(); i++) {
+			String newContents = fileContents.get(i);
+			newContents += "\t" + sumOfAscii(convertCharToInt(newContents.toCharArray()));
+			temp.add(newContents);
+			System.out.println(newContents);
+		}
+		
+		fileContents = temp;
 		
 		// Doing sort for timing purposes
 		long timeStart = System.nanoTime();
-		for (String line : fileContents) {
-			
-//			Bubble Sort
-			bubbleSort(line);
-			
-
-		}
+		bubbleSort();
 		long timeEnd = System.nanoTime();
 		
 		long totalTime = timeEnd-timeStart;
@@ -253,13 +252,8 @@ public class SortingAlgorithms {
 		
 		// Running for timing purposes
 		timeStart = System.nanoTime();
-		for (String line : fileContents) {
-			
-//			Insertion Sort
-			insertionSort(line);
-			
-	
-		}
+		
+		insertionSort();
 		
 		timeEnd = System.nanoTime();
 		
@@ -269,14 +263,12 @@ public class SortingAlgorithms {
 		System.out.println("Insertion Sort Time: " + totalTime + " ns (" + totalTimeSec + " sec)");
 		
 		// Running for timing purposes
-		timeStart = System.nanoTime();
-		for (String line : fileContents) {
-			
-//			Insertion Sort
-			mergeSort(line);
+		timeStart = System.nanoTime();	
+//			merge Sort
+		String[] writing = mergeSort();
 			
 	
-		}
+		
 		timeEnd = System.nanoTime();
 		
 		totalTime = timeEnd-timeStart;
@@ -284,16 +276,9 @@ public class SortingAlgorithms {
 		
 		System.out.println("Merge Sort Time: " + totalTime + " ns (" + totalTimeSec + " sec)");
 		
-		// Doing sort again for writing purposes
-		for (String line : fileContents) {
-			
-			String sorted = insertionSort(line);
-			
-			writeOut(sorted, firstRun);
-			if (firstRun)
-				firstRun = false;
-			
-		}
+		writeOut(writing, true);
+		
+		
 	}
 		
 	

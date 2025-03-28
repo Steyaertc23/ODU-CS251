@@ -64,7 +64,8 @@ public class SortingAlgorithms {
 			toReturn[i] = fileContents.get(i);
 		}
 		
-		return toReturn;
+		
+		return toReturn.clone();
 	}
 	
 	private int sumOfAscii(int[] asciiNums) {
@@ -77,15 +78,16 @@ public class SortingAlgorithms {
 	
 	private String[] bubbleSort() {
 		
-		String[] fileContentsArray = convertArrListToArr();
+		String[] fileContentsArray = convertArrListToArr().clone();
 		
 		// Sorting
 		String temp;
-		for (int i = 0; i < fileContentsArray.length - 1; i++) {
+		for (int i = 0; i < fileContentsArray.clone().length - 1; i++) {
             boolean swapped = false;
             for (int j = 0; j < fileContentsArray.length - i - 1; j++) {
-            	
-                if (Integer.parseInt(fileContentsArray[j].split("\t")[1]) > Integer.parseInt(fileContentsArray[j + 1].split("\t")[1])) {
+            	String fileContentsAtJ = fileContentsArray.clone()[j].split("\t")[1];
+            	String fileContentsAtJPlus1 = fileContentsArray.clone()[j + 1].split("\t")[1];
+                if (Integer.valueOf(fileContentsAtJ) > Integer.valueOf(fileContentsAtJPlus1)) {
                     
                     // Swap arr[j] and arr[j+1]
                     temp = fileContentsArray[j];
@@ -101,7 +103,7 @@ public class SortingAlgorithms {
                 break;
         }
 		
-		// Converting the sorted int[] to String
+
 		
 		return fileContentsArray;
 		
@@ -110,7 +112,7 @@ public class SortingAlgorithms {
 	private String[] insertionSort() {
 		
 		
-		String[] fileContentsArray = convertArrListToArr();
+		String[] fileContentsArray = convertArrListToArr().clone();
 		// Sort
 		int n = fileContentsArray.length;
         for (int i = 1; i < n; ++i) {
@@ -154,6 +156,7 @@ public class SortingAlgorithms {
 
         int k = l;
         while (i < n1 && j < n2) {
+        	
             if (L[i].split("\t")[1].compareTo(R[j].split("\t")[1]) <= 0) {
                 a[k] = L[i];
                 i++;
@@ -202,7 +205,7 @@ public class SortingAlgorithms {
 		
 		
 		int length = fileContents.size();
-		String[] fileContentsArray = convertArrListToArr();
+		String[] fileContentsArray = convertArrListToArr().clone();
 		
 		sort(fileContentsArray, 0, length-1);
 		
@@ -235,7 +238,7 @@ public class SortingAlgorithms {
 			String newContents = fileContents.get(i);
 			newContents += "\t" + sumOfAscii(convertCharToInt(newContents.toCharArray()));
 			temp.add(newContents);
-			System.out.println(newContents);
+//			System.out.println(newContents);
 		}
 		
 		fileContents = temp;

@@ -104,8 +104,7 @@ public class RegexRunner {
 				System.err.println("Please choose choice 1, 2, or 3.");
 			}
 		}
-		
-		System.out.println("Program completed at");
+
 		LocalTime currentTime = LocalTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
         String time = currentTime.format(formatter);

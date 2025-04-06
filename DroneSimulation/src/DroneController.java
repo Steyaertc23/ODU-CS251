@@ -95,5 +95,89 @@ public class DroneController extends Entity{
 	public ArrayList<Drone> getDronesInRange(){
 		return systemDronesInRange;
 	}
+	
+	private boolean setDroneIdle(int droneId) throws Exception {
+		for (Drone d : systemDrones) {
+			if (d.getID() == droneId) {
+				return d.setIdle();
+			}
+		}
+		throw new Exception("No drone with ID " + droneId);
+	}
+	
+	private boolean setDroneReserved(int steps, int droneId) throws Exception {
+		for (Drone d : systemDrones) {
+			if (d.getID() == droneId) {
+				return d.setReserved(steps);
+			}
+		}
+		throw new Exception("No drone with ID " + droneId);
+	}
+	
+	private boolean setDroneActive(int droneId) throws Exception {
+		for (Drone d : systemDrones) {
+			if (d.getID() == droneId) {
+				return d.setActive();
+			}
+		}
+		throw new Exception("No drone with ID " + droneId);
+	}
+	
+	public boolean droneRunner(int droneId, Drone.Status s, int steps) {
+		boolean completed = false;
+		Drone drone = new Drone();
+		for (Drone d : systemDrones) {
+			if (d.getID() == droneId) {
+				drone = d;
+			}
+		}
+		if (drone.getStatus() == Drone.Status.IDLE && s != Drone.Status.RESERVE) {
+			try {
+				completed = setDroneActive(droneId);
+				drone.decrementSteps();
+				return completed;
+			} catch(Exception e) {
+				e.printStackTrace();
+				return false;
+			}
+		}
+		switch(s) {
+		case Drone.Status.ACTIVE:
+			try {
+				completed = setDroneActive(droneId);
+				if (!completed) {
+					for (Drone d : systemDrones) {
+						if (d.getID() == droneId) {
+							d.decrementSteps();
+						}
+					}
+				}
+			} catch(Exception e) {
+				completed = false;
+				e.printStackTrace();
+			}
+			break;
+		case Drone.Status.IDLE:
+			try {
+				completed = setDroneIdle(droneId);
+			} catch(Exception e) {
+				completed = false;
+				e.printStackTrace();
+			}
+			break;
+		case Drone.Status.RESERVE:
+			try {
+				completed = setDroneReserved(steps, droneId);
+			} catch(Exception e) {
+				completed = false;
+				e.printStackTrace();
+			}
+			break;
+		default:
+			return false;
+		}
+		
+		return completed;
+	}
 
 }

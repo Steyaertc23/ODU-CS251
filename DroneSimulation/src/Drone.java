@@ -2,7 +2,15 @@
 public class Drone extends Entity{
 	private int id, topSpeed, signalRange, payloadLimit;
 	private String message;
-	private int payload;
+	private int payload, timeSteps;
+	private Status currentStatus, prevStatus;
+	
+	public enum Status{
+		ACTIVE,
+		IDLE,
+		RESERVE;
+		
+	}
 	
 	public Drone() {
 		super();
@@ -18,7 +26,8 @@ public class Drone extends Entity{
 		payloadLimit = maxPayload;
 		message = msg;
 		payload = 0;
-	
+		currentStatus = Status.ACTIVE;
+		timeSteps = 0;
 	}
 	
 	public boolean loadDrone(int payloadWeight) {
@@ -90,5 +99,50 @@ public class Drone extends Entity{
 	
 	public void setPayload(int load) {
 		payload = load;
+	}
+	
+	public boolean setIdle() {
+		prevStatus = currentStatus;
+		currentStatus = Status.IDLE;
+		if (prevStatus != Status.RESERVE) {
+			return true;
+		}
+		currentStatus = prevStatus;
+		return false;
+	}
+	
+	public boolean setReserved(int steps) {
+		prevStatus = currentStatus;
+		currentStatus = Status.RESERVE;
+		if (prevStatus == Status.IDLE) {
+			timeSteps = steps;
+			return true;
+		}
+		currentStatus = prevStatus;
+		return false;
+	}
+	
+	public boolean setActive() {
+		prevStatus = currentStatus;
+		currentStatus = Status.ACTIVE;
+		if (prevStatus != Status.RESERVE || timeSteps == 0) {
+			timeSteps = 0;
+			return true;
+		}
+		currentStatus = prevStatus;
+		return false;
+		
+	}
+	
+	public void decrementSteps() {
+		--timeSteps;
+	}
+	
+	public int getTimeSteps() {
+		return timeSteps;
+	}
+	
+	public Status getStatus() {
+		return currentStatus;
 	}
 }

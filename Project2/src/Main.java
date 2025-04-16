@@ -6,7 +6,6 @@ public class Main {
 		//Call The main menu method
 		//TODO
 		Utilites util = new Utilites();
-		System.out.println("In between");
 		util.viewMainMenu();
 
 	}

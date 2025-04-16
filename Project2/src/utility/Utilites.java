@@ -6,6 +6,8 @@ import com.odu.Accounts;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 import users.Auctioneer;
@@ -14,31 +16,58 @@ import users.Customer;
 public class Utilites {
 	
 
-	 private Accounts customers = new Accounts("C");
-	 private Accounts auctioneers = new Accounts("A");
-	 private Accounts admin = new Accounts("ADMIN");
+	 private Accounts customers;
+	 private Accounts auctioneers;
+	 private Accounts admin;
 
 	
 	
-	private AllAuctions all = new AllAuctions();
-	private ArrayList<Customer> customerList = new ArrayList<>();
-	private ArrayList<Auctioneer> auctioneerList = new ArrayList<>();
+	private AllAuctions all;
+	private ArrayList<Customer> customerList;
+	private ArrayList<Auctioneer> auctioneerList;
 	
 	/*
 	 * Create all the menu methods, refer to the instructions to see specifics
 	 */
+	
+	public Utilites() {
+//		System.out.println("Initializing Accounts");
+		customers = new Accounts("C");
+//		System.out.println("Initialized customers");
+		auctioneers = new Accounts("A");
+//		System.out.println("Initialized auctioneers");
+		admin = new Accounts("ADMIN");
+//		System.out.println("Initialized admin");
+		all = new AllAuctions();
+//		System.out.println("Initialized all autions");
+		customerList = new ArrayList<>();
+		auctioneerList = new ArrayList<>();
+//		System.out.println("Finished initialization");
+		System.out.flush();
+	}
+	
 	public void viewMainMenu() {
+//		System.out.println("Good");
 		Scanner in = new Scanner(System.in);
 
 		String sb = new String();
 		sb += "1. Create User";
 		sb += "\n2. Sign In";
 		sb += "\n3. Quit";
-
-		while (true){
-			System.out.println(sb);
+		System.out.println(sb);
+		do{
 			
-			int choice = in.nextInt();in.nextLine();
+			
+			String input = in.nextLine().trim();
+
+		    int choice;
+		    
+		    try {
+		        choice = Integer.parseInt(input);
+		    } catch (NumberFormatException e) {
+		        System.out.println("Invalid input. Please enter a number.");
+		        continue;
+		    }
 
 			switch(choice){
 				case 1 -> customerAccountCreation(in);
@@ -47,11 +76,18 @@ public class Utilites {
 					writeToAuctions();
 					System.out.println("Quitting");
 					in.close();
+					
+					LocalTime currentTime = LocalTime.now();
+			        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+			        String time = currentTime.format(formatter);
+					
+					System.out.println("\nCompleted execution at " + time);
 					return;
 				}
 				default -> System.out.println("Invalid Input");
 			}
-		}
+		}while (true);
+		
 		
 	}
 	

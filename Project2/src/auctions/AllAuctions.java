@@ -33,7 +33,7 @@ public class AllAuctions {
 		}
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		
-		try(Scanner scanner = new Scanner(System.in);) {
+		try(Scanner scanner = new Scanner(auctions);) {
 			while(scanner.hasNextLine()){
 				String line = scanner.nextLine();
 				line = line.replace("[","").replace("]","");
